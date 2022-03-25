@@ -1,6 +1,11 @@
+
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.core.exceptions import ObjectDoesNotExist
+from store.models import Product
 
 
 def say_hello(request):
-    return render(request, 'hello.html', {'name': 'Mosh'})
+    # keyword = value
+    query_set = Product.objects.filter(last_update__year = 2021)
+
+    return render(request, 'hello.html', {'name': 'Sayem', 'products': list(query_set)})
