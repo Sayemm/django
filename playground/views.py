@@ -1,11 +1,14 @@
 
 from django.shortcuts import render
-from django.core.exceptions import ObjectDoesNotExist
-from store.models import Product
+from django.db.models import Value, F, Func, Count, ExpressionWrapper, DecimalField
+from django.db.models.functions import Concat
+from store.models import Customer, Product
 
 
 def say_hello(request):
-    # keyword = value
-    query_set = Product.objects.filter(last_update__year = 2021)
+    discounted_price = ExpressionWrapper(F('unit_price') * 0.8, output_field=DecimalField())
+    query_set = Product.objects.annotate(
+        discounted_price = discounted_price
+    )
 
-    return render(request, 'hello.html', {'name': 'Sayem', 'products': list(query_set)})
+    return render(request, 'hello.html', {'name': 'Sayem', 'result': list(query_set)})
